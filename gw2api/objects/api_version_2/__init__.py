@@ -124,6 +124,14 @@ class AccountLuck(BaseAPIv2Object):
     pass
 
 
+class AccountLegendaryArmory(BaseAPIv2Object):
+    """
+    This returns information about legendary weapons and armor that are unlocked for an account.
+    Authenticated Endpoint.
+     """
+    pass
+
+
 class AccountMailCarriers(BaseAPIv2Object):
     """
          This returns information about mail carriers that are unlocked for an account.
@@ -920,7 +928,7 @@ class CreateSubToken(BaseAPIv2Object):
             return None
 
         try:
-            endpoint_url += 'permissions=' + ','.join([str(_) for _ in permissions]) + '&'
+            endpoint_url += 'permissions=' + ','.join(str(_) for _ in permissions) + '&'
         except TypeError:
             print("Could not add permissions because the given permissions argument is not an iterable.")
             return None
@@ -928,7 +936,7 @@ class CreateSubToken(BaseAPIv2Object):
         urls = kwargs.get('urls')
         if urls:
             try:
-                endpoint_url += 'urls=' + ','.join([str(_) for _ in urls]) + '&'
+                endpoint_url += 'urls=' + ','.join(str(_) for _ in urls) + '&'
             except TypeError:
                 print("Could not add urls because the given urls argument is not an iterable.")
                 return None
@@ -1404,11 +1412,12 @@ class PvPSeasonsLeaderboards(BaseAPIv2Object):
              This appends the 'id' to the endpoint and then passes it to the parent get() function.
              Appends board and region if they are supplied
 
-             Args:
-                 season_id: string, the id of the guild to add to the endpoint.
-                 **kwargs
-                    board: string, type of leaderboard to get. I.E. 'legendary'
-                    region: string, the region to get leaderboard of. I.E. 'eu/na
+         Args:
+
+             season_id: string, the id of the guild to add to the endpoint.
+             **kwargs
+             # board: string, type of leaderboard to get. I.E. 'legendary'
+             # region: string, the region to get leaderboard of. I.E. 'eu/na
          """
         try:
             endpoint_url = self._build_endpoint_base_url()
@@ -1727,6 +1736,7 @@ API_OBJECTS = [Account('account'),
                AccountHomeNodes('account/home/nodes'),
                AccountInventory('account/inventory'),
                AccountLuck('account/luck'),
+               AccountLegendaryArmory('account/legendaryarmory'),
                AccountMailCarriers('account/mailcarriers'),
                AccountMapChests('account/mapchests'),
                AccountMasteries('account/masteries'),

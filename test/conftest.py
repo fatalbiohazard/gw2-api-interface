@@ -34,7 +34,7 @@ def load_mock_text(filename_stem):
     Returns:
         The file content as text.
     """
-    with (mocks_path() / '{}.json'.format(filename_stem)).open() as f:
+    with (mocks_path() / f'{filename_stem}.json').open() as f:
         return f.read()
 
 
@@ -66,7 +66,7 @@ def register_urls_to_files(adapter, url_to_file):
         url_to_file: A dictionary mapping url parts to filenames, see above.
     """
     for url, filename_stem in url_to_file.items():
-        url = '{}/v2/{}'.format(GuildWars2Client.BASE_URL, url)
+        url = f'{GuildWars2Client.base_url}/v2/{url}'
         response = load_mock_text(filename_stem)
         adapter.register_uri('GET', url, text=response)
 

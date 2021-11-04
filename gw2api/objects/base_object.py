@@ -31,14 +31,12 @@ class BaseAPIObject:
                              or `object_type` are not set.
         """
         if not object_type:
-            raise ValueError('API Object requires `object_type` to be passed for %s'
-                             .format(self.__class__.__name__))
+            raise ValueError(f'API Object requires `object_type` to be passed for {self.__class__.__name__}')
 
         self.session = None
         self.object_type = object_type
-
-        self.base_url = GuildWars2Client.BASE_URL
-        self.version = GuildWars2Client.VERSION
+        self.base_url = GuildWars2Client.base_url
+        self.version = GuildWars2Client.version
 
     def get(self, url=None, **kwargs):
         """Get a resource for specific object type
@@ -65,19 +63,15 @@ class BaseAPIObject:
         page_size = kwargs.get('page_size')
         schema_version = kwargs.get('schema_version')
 
-        if not url:
-            request_url = self._build_endpoint_base_url()
-        else:
-            request_url = url
-
+        request_url = self._build_endpoint_base_url() if not url else url
         if bool(kwargs) and '?' not in request_url:
             request_url += '?'
 
         if _id:
-            request_url += f'id={str(_id)}&'  # {base_url}/{object}/{id}
+            request_url += f'id={_id}&'
         elif ids:
             try:
-                request_url += 'ids=' + ','.join([str(_) for _ in ids]) + '&'
+                request_url += 'ids=' + ','.join(str(_) for _ in ids) + '&'
             except TypeError:
                 print("Could not add ids because the given ids argument is not an iterable.")
 
@@ -93,14 +87,11 @@ class BaseAPIObject:
 
         request_url = request_url.strip('&')  # Remove any trailing '&'
         request_url = request_url.strip('?')  # Remove any trailing '&'
-        print(request_url)
         return self.session.get(request_url)
 
     def _build_endpoint_base_url(self):
         """Construct the base URL to access an API object"""
-        return '{base_url}/{version}/{object}'.format(base_url=self.base_url,
-                                                      version=self.version,
-                                                      object=self.object_type)
+        return f'{self.base_url}/{self.version}/{self.object_type}'
 
     def __repr__(self):
-        return '<BaseAPIObject %r\nType: %r>' % (self.session, self.object_type)
+        return f'<BaseAPIObject {self.session}\nType: {self.object_type}>'

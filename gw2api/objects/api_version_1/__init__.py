@@ -67,10 +67,10 @@ class GuildDetails(BaseAPIObject):
             raise ValueError('No Guild ID or Guild name has been passed')
 
         if guild_id:
-            endpoint_url += 'guild_id=%s&' % guild_id
+            endpoint_url += f'guild_id={guild_id}&'
 
         if guild_name:
-            endpoint_url += 'guild_name=%s' % guild_name
+            endpoint_url += f'guild_name={guild_name}'
 
         endpoint_url.rstrip('&')
 

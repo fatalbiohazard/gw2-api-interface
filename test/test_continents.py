@@ -1,5 +1,6 @@
 import collections
 import itertools
+
 import pytest
 
 from test.conftest import register_urls_to_files, load_mock_json
@@ -15,9 +16,7 @@ def powerset(iterable):
     Args:
         iterable: An iterable to create the powerset.
     """
-    return itertools.chain.from_iterable(
-        itertools.combinations(iterable, r) for r in range(len(iterable)+1)
-    )
+    return itertools.chain.from_iterable(itertools.combinations(iterable, r) for r in range(len(iterable) + 1))
 
 
 def test_continents_single_id(gw2_client, mock_adapter):
@@ -45,15 +44,11 @@ def test_continents_single_id(gw2_client, mock_adapter):
         mock_adapter: The pytest "mock_adapter" fixture.
     """
     # Prepare mock adapter
-    url_parts = ['continents', 2,
-                 'floors', '15',
-                 'regions', 26,
-                 'maps', '1205',
-                 'sectors', 1478]
+    url_parts = ['continents', 2, 'floors', '15', 'regions', 26, 'maps', '1205', 'sectors', 1478]
     url_to_file = {}
     for i, url_part in enumerate(url_parts):
-        filename = ''.join(map(str, url_parts[:i+1]))
-        url = '/'.join(map(str, url_parts[:i+1]))
+        filename = ''.join(map(str, url_parts[:i + 1]))
+        url = '/'.join(map(str, url_parts[:i + 1]))
         url_to_file[url] = filename
     register_urls_to_files(mock_adapter, url_to_file)
 
@@ -71,7 +66,7 @@ def test_continents_single_id(gw2_client, mock_adapter):
         else:
             kwargs[url_parts[i - 1]] = url_parts[i]
 
-        expected = load_mock_json(''.join(map(str, url_parts[:i+1])))
+        expected = load_mock_json(''.join(map(str, url_parts[:i + 1])))
         actual = gw2_client.continents.get(**kwargs)
 
         assert actual == expected, 'Incorrect for ' + str(kwargs)
@@ -88,16 +83,10 @@ def test_continents_multi_id(gw2_client, mock_adapter):
         gw2_client: The pytest "gw2_client" fixture.
         mock_adapter: The pytest "mock_adapter" fixture.
     """
-    url_to_file = {
-        'continents?ids=1,2': 'continents1_2',
-        'continents/2/floors?ids=1,6': 'continents2floors1_6',
-        'continents/2/floors/1/regions?ids=6,7':
-            'continents2floors1regions6_7',
-        'continents/2/floors/1/regions/6/maps?ids=350,549,900':
-            'continents2floors1regions6maps350_549_900',
-        'continents/2/floors/1/regions/7/maps/38/sectors?ids=833,834':
-            'continents2floors1regions7maps38sectors833_834',
-    }
+    url_to_file = {'continents?ids=1,2': 'continents1_2', 'continents/2/floors?ids=1,6': 'continents2floors1_6',
+                   'continents/2/floors/1/regions?ids=6,7': 'continents2floors1regions6_7',
+                   'continents/2/floors/1/regions/6/maps?ids=350,549,900': 'continents2floors1regions6maps350_549_900',
+                   'continents/2/floors/1/regions/7/maps/38/sectors?ids=833,834': 'continents2floors1regions7maps38sectors833_834', }
     register_urls_to_files(mock_adapter, url_to_file)
 
     test = 'continents1_2'
@@ -122,14 +111,12 @@ def test_continents_multi_id(gw2_client, mock_adapter):
 
     test = 'continents2floors1regions6maps350_549_900'
     expected = load_mock_json(test)
-    actual = gw2_client.continents.get(continents=2, floors=1, regions=6,
-                                       maps=[350, 549, 900])
+    actual = gw2_client.continents.get(continents=2, floors=1, regions=6, maps=[350, 549, 900])
     assert actual == expected, 'Incorrect for ' + test
 
     test = 'continents2floors1regions7maps38sectors833_834'
     expected = load_mock_json(test)
-    actual = gw2_client.continents.get(continents=2, floors=1, regions=7,
-                                       maps=38, sectors=[833, 834])
+    actual = gw2_client.continents.get(continents=2, floors=1, regions=7, maps=38, sectors=[833, 834])
     assert actual == expected, 'Incorrect for ' + test
 
 
@@ -139,12 +126,7 @@ def test_continents_no_continents(gw2_client):
     Args:
         gw2_client: The pytest "gw2_client" fixture.
     """
-    kwargs = {
-        'floors': 2,
-        'regions': 3,
-        'maps': 4,
-        'sectors': 5,
-    }
+    kwargs = {'floors': 2, 'regions': 3, 'maps': 4, 'sectors': 5, }
     kwargs_powerset = list(map(dict, powerset(kwargs.items())))
     for kwargs in kwargs_powerset[1:]:
         with pytest.raises(KeyError, match=r'continents'):
@@ -157,11 +139,7 @@ def test_continents_no_floors(gw2_client):
     Args:
         gw2_client: The pytest "gw2_client" fixture.
     """
-    kwargs = {
-        'regions': 3,
-        'maps': 4,
-        'sectors': 5,
-    }
+    kwargs = {'regions': 3, 'maps': 4, 'sectors': 5, }
     kwargs_powerset = list(map(dict, powerset(kwargs.items())))
     for kwargs in kwargs_powerset[1:]:
         with pytest.raises(KeyError, match=r'floors'):
@@ -174,10 +152,7 @@ def test_continents_no_regions(gw2_client):
     Args:
         gw2_client: The pytest "gw2_client" fixture.
     """
-    kwargs = {
-        'maps': 4,
-        'sectors': 5,
-    }
+    kwargs = {'maps': 4, 'sectors': 5, }
     kwargs_powerset = list(map(dict, powerset(kwargs.items())))
     for kwargs in kwargs_powerset[1:]:
         with pytest.raises(KeyError, match=r'regions'):
@@ -190,9 +165,7 @@ def test_continents_no_maps(gw2_client):
     Args:
         gw2_client: The pytest "gw2_client" fixture.
     """
-    kwargs = {
-        'sectors': 5,
-    }
+    kwargs = {'sectors': 5, }
     kwargs_powerset = list(map(dict, powerset(kwargs.items())))
     for kwargs in kwargs_powerset[1:]:
         with pytest.raises(KeyError, match=r'maps'):
@@ -227,11 +200,7 @@ def test_continents_backwards_compatibility(gw2_client, mock_adapter):
         gw2_client: The pytest "gw2_client" fixture.
         mock_adapter: The pytest "mock_adapter" fixture.
     """
-    url_to_file = {
-        'continents': 'continents',
-        'continents/2': 'continents2',
-        'continents?ids=1,2': 'continents1_2',
-    }
+    url_to_file = {'continents': 'continents', 'continents/2': 'continents2', 'continents?ids=1,2': 'continents1_2', }
     register_urls_to_files(mock_adapter, url_to_file)
 
     expected_continent_list = load_mock_json('continents')
